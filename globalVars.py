@@ -21,6 +21,10 @@ NOISE_REDUCTION_ITERATIONS = 5  # 5 is good balance between noise and birdcall q
 # Minimum threshold for classification
 THRESHOLD = 0.2
 
+# Max input length for PANNS classifier
+# Use to reduce memory usage
+PANNS_BATCH_SIZE_IN_MINUTES = 5  # minutes
+
 # Training Settings ##### ##### ##### ##### ##### ##### ##### #####
 
 # If training, resume training from this checkpoint

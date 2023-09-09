@@ -25,7 +25,7 @@ df[BIRD_OF_INTEREST] = 0.0
 df['Clean Prob'] = 0.0
 
 fileIndex = 0
-classifier = Classifier()
+classifier = Classifier(pannsBatchSizeInMinutes=PANNS_BATCH_SIZE_IN_MINUTES)
 for root, dirs, files in os.walk(join(RAW_DATA_PATH, 'Raw Recordings')):
     for file in files:
         if file.endswith('.wav'):

@@ -5,8 +5,6 @@ import requests
 import math
 import shutil
 
-from globalVars import RAW_DATA_PATH, SR
-
 import librosa
 import soundfile as sf
 import scipy
@@ -28,9 +26,11 @@ def _getRollingSum(x, window):
 # Labels audio with bird call and other sound labels
 # Takes in audio path and returns pandas dataframe with labels
 # If birdNetOnly is true, only returns birdNet labels
+# pannsBatchSizeInMinutes defines how many minutes of audio to run PANNS on at a time
 class Classifier:
-    def __init__(self, birdNetOnly = False):
+    def __init__(self, birdNetOnly = False, pannsBatchSizeInMinutes = 30):
         self.birdNetOnly = birdNetOnly
+        self.pannsBatchSizeInMinutes = pannsBatchSizeInMinutes
         
         # Downloads file from url and saves to save_path
         def download_file(url, save_path):
@@ -38,9 +38,9 @@ class Classifier:
                     if response.status_code == 200:
                         with open(save_path, 'wb') as file:
                             file.write(response.content)
-                        print(f"File downloaded and saved as {save_path}")
+                        print(f"\t\tFile downloaded and saved as {save_path}")
                     else:
-                        print(f"Failed to download file. Status code: {response.status_code}")
+                        print(f"\t\tFailed to download file. Status code: {response.status_code}")
                         
         # init BirdNET
         self.analyzer = Analyzer()
@@ -80,7 +80,6 @@ class Classifier:
                                    aggfunc='mean')  # pivot by common name
         birdnetDf = birdnetDf.fillna(0)
         
-        
         print('\t\tfinished running birdnet')
 
         if self.birdNetOnly:
@@ -89,10 +88,21 @@ class Classifier:
             # Run PANNS
             # Load audio
             audio, _ = librosa.core.load(audio_path, sr=32000, mono=True)
-            audio = audio[None, :]  # (batch_size, segment_samples)
+            initLength = audio.shape[0]
+            initLengthinSecs = math.ceil(initLength / 32000)
+            
+            # Make batches
+            batchSize = self.pannsBatchSizeInMinutes * 60 * 32000
+            numBatches = math.ceil(initLength / batchSize)
+            padding = numBatches * batchSize - initLength
+            audio = np.pad(audio, (0, padding), mode='constant', constant_values=(0, 0))
+            audio = np.reshape(audio, (numBatches, batchSize))
 
             # Run detection
-            framewise_output = self.sed.inference(audio)  # returns shape: (1, 100*lengthInSecs, n_classes)
+            framewise_output = self.sed.inference(audio)  # returns shape: (numBatches, 100*lengthInSecsPerBatch, n_classes)
+            framewise_output = np.reshape(framewise_output, (1, -1, framewise_output.shape[2]))
+            framewise_output = framewise_output[:, :initLengthinSecs*100, :]
+
 
             # Pad frames to multiple of 100
             length_in_secs = math.ceil(framewise_output.shape[1] / 100)
@@ -115,8 +125,6 @@ class Classifier:
             for badHeader in badHeaders:
                 if badHeader in pannsDf.columns:
                     pannsDf = pannsDf.drop(badHeader, axis=1)
-                else:
-                    print(f'Could not find {badHeader} in columns')
 
             # find rolling max for 6 seconds aligned with 3 second BirdNet window
             # we want the birdcall to be centered (1 sec before and 2 after works the best for this)
