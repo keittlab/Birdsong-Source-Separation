@@ -45,8 +45,8 @@ PRELOAD_AUDIO = False
 
 # Advanced Settings ##### ##### ##### ##### ##### ##### ##### #####
 
-# Audio Sample Rate - all inputs to model must be this sample rate
-# all files will be resampled to this sample rate
+# Audio Sample Rate
+# all files will be resampled to this sample rate and converted to mono audio
 SR = 22050
 
 # generated audio just in time instead of generating beforehand
