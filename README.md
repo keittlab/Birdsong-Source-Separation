@@ -1,11 +1,56 @@
 <div align="center">
-
 <h1>Birdsong Species Isolation Using Machine Learning</h1>
 
+
+This repository allows researchers to train a source separation model to isolate a specific species of bird from passive field recordings. This process is mostly automated and is detailed below.
+
+The code follows the process outlined in our paper, "Birdsong Species Isolation Using Machine Learning." It is built off of the Asteroid repository, which is a PyTorch-based audio source separation toolkit for researchers. 
+
+<img width="1389" alt="before and after separation image" src="https://github.com/JustinSasek/Birdsong-Source-Separation/blob/main/Source%20Separation%20Examples/beforeAfter.png?raw=true">
+Golden-Cheeked Warbler birdcall spectrograms before and after source separation.
+<br>
+<br>
+
+<audio controls>
+  <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/before0.wav" type="audio/wav">
+  Your browser does not support the audio element.
+</audio><audio controls>
+  <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/after0.wav" type="audio/wav">
+  Your browser does not support the audio element.
+</audio>
+<audio controls>
+  <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/before1.wav" type="audio/wav">
+  Your browser does not support the audio element.
+</audio><audio controls>
+  <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/after1.wav" type="audio/wav">
+  Your browser does not support the audio element.
+</audio>
+<audio controls>
+  <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/before2.wav" type="audio/wav">
+  Your browser does not support the audio element.
+</audio><audio controls>
+  <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/after2.wav" type="audio/wav">
+  Your browser does not support the audio element.
+</audio>
+<audio controls>
+  <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/before3.wav" type="audio/wav">
+  Your browser does not support the audio element.
+</audio><audio controls>
+  <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/after3.wav" type="audio/wav">
+  Your browser does not support the audio element.
+</audio>
+<audio controls>
+  <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/before4.wav" type="audio/wav">
+  Your browser does not support the audio element.
+</audio><audio controls>
+  <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/after4.wav" type="audio/wav">
+  Your browser does not support the audio element.
+</audio>
+
+Golden-Cheeked Warbler birdcall audio before and after source separation
 </div>
 
-This repository contains the code for the paper [Birdsong Species Isolation Using Machine Learning].
-It is built off of the Asteroid repository, which is a PyTorch-based audio source separation toolkit for researchers. This repository can be used to train your own birdsong source separation model or use the provided pretrained model to separate Golden-Cheeked Warbler from background noise.
+
 
 ## Compute Requirements
 For training new models, it is strongly recommended to have a CUDA-enabled GPU. 
@@ -105,6 +150,8 @@ model = Model(checkpointPath='Checkpoints/SUDO72-3sec.ckpt', modelType='SuDORMRF
 x, sr = sf.load('file.wav')
 isolated, background = model.forward(x)
 sf.write('isolated.wav', isolated, sr)
+
+
 ```
 
 ## Libraries Used
