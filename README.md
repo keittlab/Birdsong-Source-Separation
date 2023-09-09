@@ -57,7 +57,7 @@ For training new models, it is strongly recommended to have a CUDA-enabled GPU.
 For using pretrained models, a GPU is not required but recommended for faster processing. A large amount of RAM is also recommended. If the python processes crash, they likely ran out of RAM.
 
 ## Training
-**Step 1**: Move your raw field recordings into `Data/Raw Recordings`.
+**Step 1**: Move your raw field recordings into `Data/Raw Recordings`. *Note: Recordings over 1 hour may cause memory issues.*
 
     Data
         Background Samples
