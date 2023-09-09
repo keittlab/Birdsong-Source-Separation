@@ -5,7 +5,11 @@ import requests
 import math
 import shutil
 
+from globalVars import RAW_DATA_PATH, SR
+
 import librosa
+import soundfile as sf
+import scipy
 from birdnetlib import Recording
 from birdnetlib.analyzer import Analyzer
 from pathlib import Path
@@ -22,6 +26,8 @@ def _getRollingSum(x, window):
 
 
 # Labels audio with bird call and other sound labels
+# Takes in audio path and returns pandas dataframe with labels
+# If birdNetOnly is true, only returns birdNet labels
 class Classifier:
     def __init__(self, birdNetOnly = False):
         self.birdNetOnly = birdNetOnly
@@ -68,10 +74,14 @@ class Classifier:
             overlap=2.0,  # using 3-sec window that slides by 1 second
         )
         recording.analyze()
-        df = pd.DataFrame(recording.detections)  # convert to pandas dataframe
+        df = pd.DataFrame(recording.detections)  # convert to pandas dataframe and compress
+        df = df.apply(pd.to_numeric, errors='ignore')
         birdnetDf = df.pivot_table('confidence', index='start_time', columns='common_name',
                                    aggfunc='mean')  # pivot by common name
         birdnetDf = birdnetDf.fillna(0)
+        
+        
+        print('\t\tfinished running birdnet')
 
         if self.birdNetOnly:
             joined = birdnetDf
@@ -82,7 +92,7 @@ class Classifier:
             audio = audio[None, :]  # (batch_size, segment_samples)
 
             # Run detection
-            framewise_output = self.sed.inference(audio)  # shape: (1, 100*lengthInSecs, n_classes)
+            framewise_output = self.sed.inference(audio)  # returns shape: (1, 100*lengthInSecs, n_classes)
 
             # Pad frames to multiple of 100
             length_in_secs = math.ceil(framewise_output.shape[1] / 100)
@@ -90,11 +100,14 @@ class Classifier:
             framewise_output = np.pad(framewise_output, ((0, 0), (0, frames_needed), (0, 0)),
                                     mode='constant', constant_values=0)
 
+            print('\t\tfinished running PANNS')
+            
             # max pooling to second
             framewise_output = np.reshape(framewise_output, (-1, 100, 527)).max(axis=1)
 
-            # Convert to pandas dataframe
+            # Convert to pandas dataframe and compress
             pannsDf = pd.DataFrame(framewise_output, columns=labels)
+            pannsDf = pannsDf.apply(pd.to_numeric, errors='ignore')
 
             # Remove conflicting labels
             badHeaders = ['Bird', 'Bird vocalization, bird call, bird song', 'Chirp, tweet', 'Squawk', 'Chirp tone',
