@@ -2,9 +2,9 @@
 <h1>Birdsong Species Isolation Using Machine Learning</h1>
 
 
-This repository allows researchers to train a source separation model to isolate a specific species of bird from passive field recordings. This process is mostly automated and is detailed below.
+This repository allows researchers to train source separation models to isolate specific species of bird from passive field recordings.
 
-The code follows the process outlined in our paper, "Birdsong Species Isolation Using Machine Learning." It is built off of the Asteroid repository, which is a PyTorch-based audio source separation toolkit for researchers. 
+Below are the basic steps to train a new model and use pretrained models. For more technical details, please see our paper, "Birdsong Species Isolation Using Machine Learning." 
 
 <img width="1389" alt="before and after separation image" src="https://github.com/JustinSasek/Birdsong-Source-Separation/blob/main/Source%20Separation%20Examples/beforeAfter.png?raw=true">
 Golden-Cheeked Warbler birdcall spectrograms before and after source separation.
@@ -54,7 +54,7 @@ Golden-Cheeked Warbler birdcall audio before and after source separation
 
 ## Compute Requirements
 For training new models, it is strongly recommended to have a CUDA-enabled GPU. 
-For using pretrained models, a GPU is not required but recommended for faster processing.
+For using pretrained models, a GPU is not required but recommended for faster processing. A large amount of RAM is also recommended. If the python processes crash, they likely ran out of RAM.
 
 ## Training
 **Step 1**: Move your raw field recordings into `Data/Raw Recordings`.
@@ -156,7 +156,7 @@ sf.write('isolated.wav', isolated, sr)
 
 ## Libraries Used
 
+* Asteroid: https://github.com/asteroid-team/asteroid
 * BirdNET: https://github.com/kahst/BirdNET-Analyzer
 * PANNs: https://github.com/qiuqiangkong/audioset_tagging_cnn
-* Asteroid: https://github.com/asteroid-team/asteroid
 * Microsoft Virtual Forest Impulse Response Simulator: https://github.com/microsoft/Forest_IR_synthesis
