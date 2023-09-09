@@ -6,7 +6,7 @@ import numpy as np
 import psutil
 import cv2
 import multiprocessing as mp
-from globalVars import RAW_DATA_PATH, GENERATED_WRITE_DATA_PATH, SR, PRELOAD_AUDIO, VIRTUAL_FOREST_IR_PATH
+from globalVars import RAW_DATA_PATH, GENERATED_WRITE_DATA_PATH, SR, PRELOAD_AUDIO, VIRTUAL_FOREST_IR_PATH, DISTRIBUTION_PATH
 import concurrent.futures
 
 
@@ -70,45 +70,30 @@ def initGenerator():
     if PRELOAD_AUDIO:
         audio = loadAllAudio()
 
-    # load the positive files and their probabilities
+    # load the files and their distribution
     pFiles = []
     pProbs = []
-    # A and B Song
-    loadToList(pFiles, pProbs, 10,
-               RAW_DATA_PATH + '/Positive Samples/Keitt Positive/A and B Song')
-
-    # A Song
-    loadToList(pFiles, pProbs, 40 / 2,
-               RAW_DATA_PATH + '/Positive Samples/Keitt Positive/A Song')
-    loadToList(pFiles, pProbs, 40 / 2,
-               RAW_DATA_PATH + '/Positive Samples/Library Positive/A Song')
-
-    # A Song No Hook
-    loadToList(pFiles, pProbs, 10 / 2,
-               RAW_DATA_PATH + '/Positive Samples/Keitt Positive/A Song No Hook')
-    loadToList(pFiles, pProbs, 10 / 2,
-               RAW_DATA_PATH + '/Positive Samples/Library Positive/A Song No Hook')
-
-    # B Song
-    loadToList(pFiles, pProbs, 40 / 3,
-               RAW_DATA_PATH + '/Positive Samples/Keitt Positive/B Song')
-    loadToList(pFiles, pProbs, 40 / 3,
-               RAW_DATA_PATH + '/Positive Samples/Keitt Positive/B Song Vertical Lines')
-    loadToList(pFiles, pProbs, 40 / 3,
-               RAW_DATA_PATH + '/Positive Samples/Library Positive/B Song')
+    
+    nFiles = []
+    nProbs = []
+    
+    with open(DISTRIBUTION_PATH, 'r') as f:
+        for line in f:
+            line = line.split(',')
+            assert len(line) == 2, 'expected 2 columns in distribution.csv'
+            path = os.path.join(RAW_DATA_PATH, line[0].strip())
+            weight = float(line[2])
+            
+            # adds files to either positive or negative list
+            if path.startswith(RAW_DATA_PATH + '/Positive Samples'):
+                loadToList(pFiles, pProbs, weight, path)
+            elif path.startswith(RAW_DATA_PATH + '/Background Samples'):
+                loadToList(nFiles, nProbs, weight, path)
+            else:
+                raise Exception(f'unknown path found in distribution.csv: {path}')
 
     # Normalize the probabilities
     pProbs /= np.sum(pProbs)
-
-    # load the negative files and their probabilities
-    nFiles = []
-    nProbs = []
-    loadToList(nFiles, nProbs, 1,
-               RAW_DATA_PATH + '/Background Samples/Keitt Background')  # ~60s
-    loadToList(nFiles, nProbs, 1,
-               RAW_DATA_PATH + '/Background Samples/Library Other Species')  # ~60s
-    loadToList(nFiles, nProbs, 6, RAW_DATA_PATH + '/Background Samples/Keitt Odd Sounds')  # ~10s
-    # Normalize the probabilities
     nProbs /= np.sum(nProbs)
 
     print('Generator Initialized', flush=True)
@@ -197,33 +182,17 @@ def loadBackground(length, nFiles, nProbs, audio):
 # set IBR to override isolated-background ratio
 # set doubleBackground to true if you want to double the background
 # set forest to number of trees (in thousands) or a numpy array of the IR
-def generateExample(length=60 * SR, song=None, numPositiveFiles=None, IBR=None, doubleBackground = False, forest=None, pFiles=None, pProbs=None, nFiles=None, nProbs=None, audio=None):
-    # Filter based on song
-    if song != None:
+def generateExample(length=60 * SR, songPath=None, numPositiveFiles=None, IBR=None, doubleBackground = False, forest=None, pFiles=None, pProbs=None, nFiles=None, nProbs=None, audio=None):
+    # Filter based on songPath
+    if songPath != None:
         goodIndicies = np.zeros(len(pProbs), dtype = np.bool)
         numGood = 0
-        if song == 'A':
-            for i in range(len(pFiles) - 1, -1, -1):
-                if 'Positive/A Song' in pFiles[i]:
-                    goodIndicies[i] = True
-                    numGood += 1
-        elif song == 'A Hook':
-            for i in range(len(pFiles) - 1, -1, -1):
-                if 'Positive/A Song No Hook/' in pFiles[i]:
-                    goodIndicies[i] = True
-                    numGood += 1
-        elif song == 'A No Hook':
-            for i in range(len(pFiles) - 1, -1, -1):
-                if 'Positive/A Song/' in pFiles[i]:
-                    goodIndicies[i] = True
-                    numGood += 1
-        elif song == 'B':
-            for i in range(len(pFiles) - 1, -1, -1):
-                if not 'Positive/A ' in pFiles[i]:
-                    goodIndicies[i] = True
-                    numGood += 1
-        else:
-            raise Exception(f'unknown song type \"{song}\" found')
+        for i in range(len(pFiles) - 1, -1, -1):
+            if songPath in pFiles[i]:
+                goodIndicies[i] = True
+                numGood += 1
+        if numGood == 0:
+            raise Exception(f'no files found in path {songPath} ')
         newPFiles = []
         newPProbs = np.empty(numGood, dtype = np.float32)
         iNew = 0

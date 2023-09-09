@@ -1,4 +1,6 @@
 # Project specific
+Data/**/*.wav
+**/*.pth
 MiniLibriMix
 lightning_logs
 **.csv

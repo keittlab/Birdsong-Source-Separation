@@ -2,7 +2,7 @@ from torch import optim
 from pytorch_lightning import Trainer
 from torch.utils.data import DataLoader
 # We train the same model architecture that we used for inference above.
-from asteroid.models import DPRNNTasNet as SelectedModel
+from asteroid.models import ConvTasNet as SelectedModel
 
 # In this example we use Permutation Invariant Training (PIT) and the SI-SDR loss.
 from asteroid.losses import pairwise_neg_sisdr, PITLossWrapper
@@ -12,7 +12,7 @@ from asteroid.data import BirdsongDataset
 
 # Asteroid's System is a convenience wrapper for PyTorch-Lightning.
 from asteroid.engine import System
-from globalVars import BATCH_SIZE, NUM_WORKERS, SEGMENT_LENGTH, SAMPLES_PER_EPOCH, PRELOAD_AUDIO, JIT_GENRATION, CHECKPOINT_PATH, TRAINING_PERCENTAGE, GENERATED_READ_DATA_PATHS, GENERATED_WRITE_DATA_PATH, RAW_DATA_PATH, VIRTUAL_FOREST_IR_PATH, SR
+from globalVars import BATCH_SIZE, NUM_WORKERS, SEGMENT_LENGTH, SAMPLES_PER_EPOCH, PRELOAD_AUDIO, JIT_GENRATION, CHECKPOINT_PATH, TRAINING_PERCENTAGE, GENERATED_READ_DATA_PATHS, GENERATED_WRITE_DATA_PATH, RAW_DATA_PATH, VIRTUAL_FOREST_IR_PATH, SR, DISTRIBUTION_PATH
 from dataGenerator import initGenerator
 
 import os
@@ -20,7 +20,7 @@ import torch
 
 
 if __name__ == "__main__":
-    print('DPRNNTasNet')
+    print('ConvTasNet')
     print('BATCH_SIZE: ', BATCH_SIZE)
     print('NUM_WORKERS: ', NUM_WORKERS)
     print('SEGMENT_LENGTH: ', SEGMENT_LENGTH)
@@ -34,6 +34,7 @@ if __name__ == "__main__":
     print('RAW_DATA_PATH: ', RAW_DATA_PATH)
     print('VIRTUAL_FOREST_IR_PATH: ', VIRTUAL_FOREST_IR_PATH)
     print('SR: ', SR)
+    print('DISTRIBUTION_PATH: ', DISTRIBUTION_PATH)
     generatorVars = initGenerator()
     torch.cuda.empty_cache()
 

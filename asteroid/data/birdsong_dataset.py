@@ -1,11 +1,11 @@
 from torch.utils import data
 import os
 import soundfile as sf
-from torch.utils.data import Dataset, DataLoader
+from scipy.signal import resample
 import numpy as np
 import torch
-import time
-import psutil
+import librosa
+
 # from main import DATA_PATH
 from globalVars import GENERATED_READ_DATA_PATHS, SEGMENT_LENGTH, SR, JIT_GENRATION, TRAINING_PERCENTAGE, SAMPLES_PER_EPOCH
 from dataGenerator import generateExample
@@ -40,8 +40,8 @@ class BirdsongDataset(data.Dataset):
             self.trainLen = int(l * 0.8)
             self.valLen = l - self.trainLen
 
-
     # This function returns the length of the dataset
+
     def __len__(self):
         if JIT_GENRATION:
             if self.Val:
@@ -49,11 +49,11 @@ class BirdsongDataset(data.Dataset):
             return int(.8 * SAMPLES_PER_EPOCH)
 
         if self.Val:
-            return int(self.valLen * (60 // SEGMENT_LENGTH) * TRAINING_PERCENTAGE)  
+            return int(self.valLen * (60 // SEGMENT_LENGTH) * TRAINING_PERCENTAGE)
         return int(self.trainLen * (60 // SEGMENT_LENGTH) * TRAINING_PERCENTAGE)
 
-
     # This function returns the data for a given index
+
     def __getitem__(self, idx):
         isolated, background, combined = None, None, None
         if JIT_GENRATION:
@@ -75,12 +75,19 @@ class BirdsongDataset(data.Dataset):
 
             # Combined
             combFilepath = filepath.replace('Isolated', 'Combined').replace('isolated', 'combined')
-            combined, _ = sf.read(combFilepath, dtype="float32", start=start * SR, stop=end * SR)
+            sr = sf.info(combFilepath).samplerate
+            combined, _ = sf.read(combFilepath, dtype="float32", start=start * sr, stop=end * sr)
+            combined = resample(combined, int(len(combined) / sr * SR))
             combined = torch.from_numpy(combined)
 
+            sr = sf.info(filepath).samplerate
             isolated, _ = sf.read(filepath, dtype="float32", start=start * SR, stop=end * SR)
+            isolated = resample(isolated, int(len(isolated) / sr * SR))
+
             backgroundFilepath = filepath.replace('Isolated', 'Background').replace('isolated', 'background')
+            sr = sf.info(backgroundFilepath).samplerate
             background, _ = sf.read(backgroundFilepath, dtype="float32", start=start * SR, stop=end * SR)
+            background = resample(background, int(len(background) / sr * SR))
 
         sources = np.vstack([isolated, background])
         # Convert sources to tensor
