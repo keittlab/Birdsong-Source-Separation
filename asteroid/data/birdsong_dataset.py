@@ -73,21 +73,14 @@ class BirdsongDataset(data.Dataset):
             if not os.path.exists(filepath):
                 raise Exception(filepath + 'not found while trying to load data')
 
-            # Combined
             combFilepath = filepath.replace('Isolated', 'Combined').replace('isolated', 'combined')
-            sr = sf.info(combFilepath).samplerate
-            combined, _ = sf.read(combFilepath, dtype="float32", start=start * sr, stop=end * sr)
-            combined = resample(combined, int(len(combined) / sr * SR))
-            combined = torch.from_numpy(combined)
-
-            sr = sf.info(filepath).samplerate
-            isolated, _ = sf.read(filepath, dtype="float32", start=start * SR, stop=end * SR)
-            isolated = resample(isolated, int(len(isolated) / sr * SR))
-
             backgroundFilepath = filepath.replace('Isolated', 'Background').replace('isolated', 'background')
-            sr = sf.info(backgroundFilepath).samplerate
-            background, _ = sf.read(backgroundFilepath, dtype="float32", start=start * SR, stop=end * SR)
-            background = resample(background, int(len(background) / sr * SR))
+            
+            combined, _ = librosa.load(combFilepath, sr=SR, offset=start, duration=end-start)
+            isolated, _ = librosa.load(filepath, sr=SR, offset=start, duration=end-start)
+            background, _ = librosa.load(backgroundFilepath, sr=SR, offset=start, duration=end-start)
+
+            combined = torch.from_numpy(combined)
 
         sources = np.vstack([isolated, background])
         # Convert sources to tensor

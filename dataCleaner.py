@@ -1,5 +1,5 @@
 # imports
-from globalVars import RAW_DATA_PATH, BIRD_OF_INTEREST, THRESHOLD, BIRD_OF_INTEREST_MIN_FREQ, NOISE_REDUCTION_ITERATIONS, SR
+from globalVars import *
 from util import *
 
 import os
@@ -37,8 +37,7 @@ for root, dirs, files in os.walk(join(RAW_DATA_PATH, 'Raw Recordings')):
                 labels[BIRD_OF_INTEREST] = 0.0
 
             # get loudest 1 minute of audio
-            x, sr = sf.read(audio_path)
-            x = resample(x, int(len(x) / sr * SR))
+            x, _ = librosa.load(audio_path, sr=SR)
 
             if len(x.shape) > 1:
                 x = x[:, 0]
@@ -46,7 +45,7 @@ for root, dirs, files in os.walk(join(RAW_DATA_PATH, 'Raw Recordings')):
             sf.write(join(RAW_DATA_PATH, f'Background Samples/Volume Based/{fileIndex}.wav'), y, SR)
 
             df = pd.concat((df, labels), ignore_index=True)
-            if len(df) > 20000:
+            if len(df) > 20000:  # limits memory usage
                 df = consolidateLabels(df, BIRD_OF_INTEREST, THRESHOLD)
             fileIndex += 1
 
@@ -69,9 +68,7 @@ for index, row in df.iterrows():
     audio_path = row['file']
     start_time = max(int(row['start time']) - 1, 0)
 
-    sr = sf.info(audio_path).samplerate
-    x, _ = sf.read(audio_path, start=start_time * sr, frames=6 * sr)
-    x = resample(x, int(len(x) / sr * SR))
+    x, _ = librosa.load(audio_path, sr=SR, offset=start_time, duration=6)
 
     # convert to mono
     if len(x.shape) > 1:
