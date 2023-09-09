@@ -5,6 +5,7 @@ MiniLibriMix
 lightning_logs
 **.csv
 **.png
+!Source Separation Examples/beforeAfter.png
 **.DS_Store
 uploader_info.yml
 egs/**/exp
