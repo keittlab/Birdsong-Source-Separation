@@ -460,16 +460,4 @@ def generateSampleForestIR(numTrees=100000):
     ir = simulateForestIR(numTrees=100000)
     Wav.writeWav(ir, f"forestIR{numTrees//1000}k.wav", fs, 1)
 
-if __name__ == "__main__":
-
-    for name in [100, 200, 500, 1000]:
-        x, srX = sf.read("bird.wav")
-        ir, srIR = sf.read(f"forestIR{name}k.wav")
-        print("x:",x.shape)
-        print("ir:",ir.shape)
-        print("srX:",srX)
-        print("srIR:",srIR)
-        # convolve x with impulse response IR to get y
-        y = np.convolve(x,ir)
-        sf.write(f"bird{name}k.wav", y[:len(x)], srX)
     
