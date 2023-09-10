@@ -71,7 +71,7 @@ For using pretrained models, a GPU is not required but recommended for faster pr
 
 **Step 2**: Edit `BIRD_OF_INTEREST` and `BIRD_OF_INTEREST_MIN_FREQ` within `globalVars.py` to match your species.
 
-**Step 3**: Install libraries:
+**Step 3**: Install libraries. *Note: This repo is designed for Python 3.10.9*
 
 ```bash
     pip install -r requirements.txt
