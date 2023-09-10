@@ -98,25 +98,32 @@ class Classifier:
             audio = np.pad(audio, (0, padding), mode='constant', constant_values=(0, 0))
             audio = np.reshape(audio, (numBatches, batchSize))
 
-            # Run detection
-            framewise_output = self.sed.inference(audio)  # returns shape: (numBatches, 100*lengthInSecsPerBatch, n_classes)
-            framewise_output = np.reshape(framewise_output, (1, -1, framewise_output.shape[2]))
-            framewise_output = framewise_output[:, :initLengthinSecs*100, :]
+            # Run detection batch by batch
+            firstOutput = self.sed.inference(audio[0:1, :])  # returns shape: (numBatches, 100*lengthInSecsPerBatch, n_classes)
+            framewiseOutput = np.empty((audio.shape[0], firstOutput.shape[1], firstOutput.shape[2]), )
+            framewiseOutput[0:1, :, :] = firstOutput
+            for i in range(1, audio.shape[0]):
+                framewiseOutput[i:i+1, :, :] = self.sed.inference(audio[i:i+1, :])
+                
+            
+            
+            framewiseOutput = np.reshape(framewiseOutput, (1, -1, framewiseOutput.shape[2]))
+            framewiseOutput = framewiseOutput[:, :initLengthinSecs*100, :]
 
 
             # Pad frames to multiple of 100
-            length_in_secs = math.ceil(framewise_output.shape[1] / 100)
-            frames_needed = length_in_secs * 100 - framewise_output.shape[1]
-            framewise_output = np.pad(framewise_output, ((0, 0), (0, frames_needed), (0, 0)),
+            lengthInSecs = math.ceil(framewiseOutput.shape[1] / 100)
+            framesNeeded = lengthInSecs * 100 - framewiseOutput.shape[1]
+            framewiseOutput = np.pad(framewiseOutput, ((0, 0), (0, framesNeeded), (0, 0)),
                                     mode='constant', constant_values=0)
 
             print('\t\tfinished running PANNS')
             
             # max pooling to second
-            framewise_output = np.reshape(framewise_output, (-1, 100, 527)).max(axis=1)
+            framewiseOutput = np.reshape(framewiseOutput, (-1, 100, 527)).max(axis=1)
 
             # Convert to pandas dataframe and compress
-            pannsDf = pd.DataFrame(framewise_output, columns=labels)
+            pannsDf = pd.DataFrame(framewiseOutput, columns=labels)
             pannsDf = pannsDf.apply(pd.to_numeric, errors='ignore')
 
             # Remove conflicting labels

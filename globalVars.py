@@ -23,7 +23,7 @@ THRESHOLD = 0.2
 
 # Max input length for PANNS classifier
 # Use to reduce memory usage
-PANNS_BATCH_SIZE_IN_MINUTES = 5  # minutes
+PANNS_BATCH_SIZE_IN_MINUTES = 30  # minutes
 
 # Training Settings ##### ##### ##### ##### ##### ##### ##### #####
 
@@ -75,7 +75,7 @@ GENERATED_WRITE_DATA_PATH = ''
 # Fixed Species Name ##### ##### ##### ##### ##### ##### ##### #####
 if 'haveFixedSpeciesName' not in locals():
     from birdnetlib.species import SpeciesList
-    
+
     speciesListLoader = SpeciesList()
     speciesListLoader.load_labels()
     speciesList = [species.split('_')[1] for species in speciesListLoader.labels]
