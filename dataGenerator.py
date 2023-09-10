@@ -6,7 +6,7 @@ import numpy as np
 import psutil
 import cv2
 import multiprocessing as mp
-from globalVars import RAW_DATA_PATH, GENERATED_WRITE_DATA_PATH, SR, PRELOAD_AUDIO, VIRTUAL_FOREST_IR_PATH, DISTRIBUTION_PATH
+from globalVars import RAW_DATA_PATH, GENERATED_WRITE_DATA_PATH, SR, PRELOAD_AUDIO, VIRTUAL_FOREST_IR_PATH, DISTRIBUTION
 import concurrent.futures
 
 
@@ -77,20 +77,14 @@ def initGenerator():
     nFiles = []
     nProbs = []
     
-    with open(DISTRIBUTION_PATH, 'r') as f:
-        for line in f:
-            line = line.split(',')
-            assert len(line) == 2, 'expected 2 columns in distribution.csv'
-            path = os.path.join(RAW_DATA_PATH, line[0].strip())
-            weight = float(line[2])
-            
-            # adds files to either positive or negative list
-            if path.startswith(RAW_DATA_PATH + '/Positive Samples'):
-                loadToList(pFiles, pProbs, weight, path)
-            elif path.startswith(RAW_DATA_PATH + '/Background Samples'):
-                loadToList(nFiles, nProbs, weight, path)
-            else:
-                raise Exception(f'unknown path found in distribution.csv: {path}')
+    for path, weight in DISTRIBUTION.items():
+        # adds files to either positive or negative list
+        if path.startswith('Positive Samples'):
+            loadToList(pFiles, pProbs, weight, join(RAW_DATA_PATH, path))
+        elif path.startswith('Background Samples'):
+            loadToList(nFiles, nProbs, weight, join(RAW_DATA_PATH, path))
+        else:
+            raise Exception(f'unknown path found in distribution.csv: {path}')
 
     # Normalize the probabilities
     pProbs /= np.sum(pProbs)
@@ -204,6 +198,10 @@ def generateExample(length=60 * SR, songPath=None, numPositiveFiles=None, IBR=No
         pFiles = newPFiles
         pProbs = newPProbs / np.sum(newPProbs)
     if len(pFiles) == 0:
+        for i in range(5):
+            print(pFiles[i])
+        print(songPath)
+        print()
         raise Exception('All positive files filtered out')
         
     # randomly select number of positive files
