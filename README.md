@@ -13,31 +13,24 @@ Golden-Cheeked Warbler birdcall spectrograms before and after source separation.
 
 <audio controls>
   <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/before0.wav" type="audio/wav">
-  Your browser does not support the audio element.
+  Your browser does not support the audio elements.
 </audio><audio controls>
   <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/after0.wav" type="audio/wav">
-  Your browser does not support the audio element.
 </audio>
 <audio controls>
   <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/before1.wav" type="audio/wav">
-  Your browser does not support the audio element.
 </audio><audio controls>
   <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/after1.wav" type="audio/wav">
-  Your browser does not support the audio element.
 </audio>
 <audio controls>
   <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/before2.wav" type="audio/wav">
-  Your browser does not support the audio element.
 </audio><audio controls>
   <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/after2.wav" type="audio/wav">
-  Your browser does not support the audio element.
 </audio>
 <audio controls>
   <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/before3.wav" type="audio/wav">
-  Your browser does not support the audio element.
 </audio><audio controls>
   <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/after3.wav" type="audio/wav">
-  Your browser does not support the audio element.
 </audio>
 <audio controls>
   <source src="https://github.com/JustinSasek/Birdsong-Source-Separation/raw/main/Source%20Separation%20Examples/before4.wav" type="audio/wav">

@@ -80,8 +80,6 @@ class Classifier:
                                    aggfunc='mean')  # pivot by common name
         birdnetDf = birdnetDf.fillna(0)
         
-        print('\t\tfinished running birdnet')
-
         if self.birdNetOnly:
             joined = birdnetDf
         else:
@@ -105,8 +103,6 @@ class Classifier:
             for i in range(1, audio.shape[0]):
                 framewiseOutput[i:i+1, :, :] = self.sed.inference(audio[i:i+1, :])
                 
-            
-            
             framewiseOutput = np.reshape(framewiseOutput, (1, -1, framewiseOutput.shape[2]))
             framewiseOutput = framewiseOutput[:, :initLengthinSecs*100, :]
 
@@ -117,8 +113,6 @@ class Classifier:
             framewiseOutput = np.pad(framewiseOutput, ((0, 0), (0, framesNeeded), (0, 0)),
                                     mode='constant', constant_values=0)
 
-            print('\t\tfinished running PANNS')
-            
             # max pooling to second
             framewiseOutput = np.reshape(framewiseOutput, (-1, 100, 527)).max(axis=1)
 
