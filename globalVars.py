@@ -23,7 +23,7 @@ THRESHOLD = 0.2
 
 # Max input length for PANNS classifier
 # Use to reduce memory usage
-PANNS_BATCH_SIZE_IN_MINUTES = 30  # minutes
+PANNS_BATCH_SIZE_IN_MINUTES = 5  # minutes
 
 # Training Settings ##### ##### ##### ##### ##### ##### ##### #####
 
