@@ -23,7 +23,7 @@ from Virtual_Forest.ForestReverb import simulateForestIR
 
 
 CSVPATH = 'Eval Results/Tests.csv'
-WRITEPATH = 'Eval Results/Test Samples'
+WRITEPATH = None  #'Eval Results/Test Samples'  # uncomment to save some samples during testing
 CHECKPOINT_PATH = f'Checkpoints/SUDO72-3sec.ckpt'
 MODEL_TYPE = 'SuDORMRFNet'
 TEST_SEGMENT_LENGTH = 60  # in seconds (can be longer than model segment length)
@@ -336,7 +336,10 @@ def runTrilaterate(n):
 def classify(x, classifier):
     sf.write('temp.wav', x, SR)
     df = classifier.classify('temp.wav')
-    results = df[BIRD_OF_INTEREST].values # index 0: probability of bird from 0 to 3 seconds
+    if BIRD_OF_INTEREST not in df.columns:
+        results = np.zeros(len(df))
+    else:
+        results = df[BIRD_OF_INTEREST].values # index 0: probability of bird from 0 to 3 seconds
     os.remove('temp.wav')
     return results
 
@@ -399,5 +402,4 @@ if __name__ == '__main__':
     runTrilaterate(10000)
         
     # All Other Tests: random forest, double background, IBR, num positive files, song path
-    while True:
-        runAll(1000000)
+    runAll(1000000)
