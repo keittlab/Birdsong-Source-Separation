@@ -33,6 +33,7 @@ for root, dirs, files in os.walk(join(RAW_DATA_PATH, 'Raw Recordings')):
             audio_path = os.path.join(root, file)
 
             labels = classifier.classify(audio_path)
+            print('\t\tfinished classification')
             if BIRD_OF_INTEREST not in labels.columns:
                 labels[BIRD_OF_INTEREST] = 0.0
 
