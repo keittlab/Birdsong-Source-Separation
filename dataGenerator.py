@@ -165,7 +165,7 @@ def loadBackground(length, nFiles, nProbs, audio):
     negativeCombined *= np.random.choice([0.1, 0.5, 1], p=[0.05, 0.05, 0.9])
 
     
-    start = np.random.randint(0, len(negativeCombined) - length)
+    start = np.random.randint(0, len(negativeCombined) - length + 1)
     end = start + length
     return negativeCombined[start:end]
 
