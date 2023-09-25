@@ -108,7 +108,7 @@ def runSample(csv, i, config, generatorVars, isTimeLag=False):
     if isTimeLag:
         isolated = isolated.detach().numpy()
         timeLag = calcTimeLag(estSources[0], isolated) / SR
-        line += f'0.0, 0.0, 0.0, 0.0, 0.0, 0.0, {timeLag}\n'
+        line += f',,,,,,{timeLag}\n'
         if abs(timeLag) > 0:
             print('\t\texception found')
             sf.write(join(WRITEPATH, f'estIsolated{i}.wav'), estSources[0], SR)
