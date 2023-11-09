@@ -1,5 +1,5 @@
 <div align="center">
-<h1>Birdsong Species Isolation Using Machine Learning</h1>
+<h1>Automated Generation of Species-Specific Training Data from Large, Unlabeled Acoustic Datasets for Supervised Birdsong Isolation</h1>
 
 
 This repository allows researchers to train source separation models to isolate specific species of bird from passive field recordings.
