@@ -8,6 +8,7 @@ noisereduce==2.0.1
 tensorflow
 birdnetlib
 scipy
+opencv-python
 
 # Install
 PyYAML>=5.0
