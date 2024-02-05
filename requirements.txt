@@ -6,7 +6,7 @@ birdnetlib==0.10.0
 panns-inference==0.1.1
 noisereduce==2.0.1
 tensorflow
-
+birdnetlib
 
 # Install
 PyYAML>=5.0

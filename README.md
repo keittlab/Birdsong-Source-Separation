@@ -144,9 +144,10 @@ Ex:
 ```python
 from forward import Model
 import soundfile as sf
+import librosa
 
 model = Model(checkpointPath='Checkpoints/SUDO72-3sec.ckpt', modelType='SuDORMRFNet')
-x, sr = sf.read('file.wav')
+x, sr = librosa.load('combined.wav', mono=True)
 isolated, background = model.forward(x)
 sf.write('isolated.wav', isolated, sr)
 
