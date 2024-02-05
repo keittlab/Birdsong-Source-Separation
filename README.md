@@ -146,7 +146,7 @@ from forward import Model
 import soundfile as sf
 
 model = Model(checkpointPath='Checkpoints/SUDO72-3sec.ckpt', modelType='SuDORMRFNet')
-x, sr = sf.load('file.wav')
+x, sr = sf.read('file.wav')
 isolated, background = model.forward(x)
 sf.write('isolated.wav', isolated, sr)
 
