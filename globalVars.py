@@ -10,7 +10,9 @@ BIRD_OF_INTEREST_MIN_FREQ = 2000  # Hz
 
 # Probability distribution each folder within Data of being selected during sample generation
 DISTRIBUTION = {
-    'Positive Samples': 100,
+    'Positive Samples/A Song/With Hook': 33,
+    'Positive Samples/A Song/Without Hook': 33,
+    'Positive Samples/B Song': 34,
     'Background Samples/Volume Based': 40,  # loudest 1 minute of each raw recording
     'Background Samples/Label Based': 60,  # highest classificaiton probability for each category
 }
