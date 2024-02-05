@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 from matplotlib import gridspec
 
-matplotlib.use("Qt5Agg")  # pip install PyQt5
 # set matplotlib font to times new roman
 matplotlib.rcParams["font.family"] = "Times New Roman"
 DEFAULT_FONT_SIZE = 9
