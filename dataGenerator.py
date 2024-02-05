@@ -3,7 +3,6 @@ from os.path import join
 import librosa
 import soundfile as sf
 import numpy as np
-import psutil
 import cv2
 import multiprocessing as mp
 from globalVars import RAW_DATA_PATH, GENERATED_WRITE_DATA_PATH, SR, PRELOAD_AUDIO, VIRTUAL_FOREST_IR_PATH, DISTRIBUTION
@@ -39,8 +38,6 @@ def loadAllAudio():
                     print('Sample rate is not 22050', flush=True)
                     continue
                 audio[join(root, file)] = y
-                if i < 10 or i % 100 == 0:
-                    print(psutil.virtual_memory(), flush = True)
                 i += 1
     for root, dirs, files in os.walk(VIRTUAL_FOREST_IR_PATH):
         for file in files:
@@ -50,8 +47,6 @@ def loadAllAudio():
                     print('Sample rate is not 22050', flush=True)
                     continue
                 audio[join(root, file)] = y
-                if i < 10 or i % 100 == 0:
-                    print(psutil.virtual_memory(), flush = True)
                 i += 1
     print('\nfinished loading audio into memory\n')
     return audio
