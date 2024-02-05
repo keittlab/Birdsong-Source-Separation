@@ -1,1 +1,0 @@
-../../../egs/sms_wsj/README.md

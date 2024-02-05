@@ -1,1 +1,0 @@
-../../../egs/wham/README.md

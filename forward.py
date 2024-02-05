@@ -20,10 +20,14 @@ class Model:
         else:
             raise Exception(f'Invalid model type: \'{modelType}\'')
 
-        # use Mac GPU if available (CUDA also works)
+        # send model to GPU if available
         if torch.backends.mps.is_available():
             print('Using Mac GPU')
             self.model.to(torch.device("mps"))
+            
+        elif torch.cuda.is_available():
+            print('Using CUDA')
+            self.model.to(torch.device("cuda"))
 
         # load checkpoint
         checkpoint = torch.load(checkpointPath, map_location='cpu')
@@ -64,9 +68,13 @@ class Model:
             end = min(end, len(combined))  # don't go out of bounds
             modelInput = torch.from_numpy(combined[start:end])
             
-            # use mac GPU if available (CUDA also works)
+            # use mac GPU if available
             if torch.backends.mps.is_available():
                 modelInput = modelInput.to('mps')
+                
+            # use CUDA if available
+            elif torch.cuda.is_available():
+                modelInput = modelInput.to('cuda')
             modelOutput = self.model.forward(modelInput)
             del modelInput
             estimated_sources[start:end] = modelOutput.to('cpu').detach().numpy()

@@ -1,1 +1,0 @@
-../../../egs/kinect-wsj/README.md

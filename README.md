@@ -120,6 +120,12 @@ DISTRIBUTION = {
 
 **Step 8**: Adjust parameters in `globalVars.py` if needed.
 
+**Step 9**: Evaluate model performance
+  
+  ```bash
+      python3 evalModel.py
+  ```
+
 ## Pretrained Models
 We provide pretrained models for separating Golden-Cheeked Warbler birdsong from background noise. These models can be found in the `Checkpoints` folder.
 

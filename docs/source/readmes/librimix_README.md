@@ -1,1 +1,0 @@
-../../../egs/librimix/README.md

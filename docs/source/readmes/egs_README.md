@@ -1,1 +1,0 @@
-../../../egs/README.md

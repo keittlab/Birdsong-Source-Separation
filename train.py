@@ -50,6 +50,11 @@ if __name__ == "__main__":
     if torch.backends.mps.is_available():
         print('Using Mac GPU')
         model.to(torch.device("mps"))
+        
+    # Use CUDA if available
+    if torch.cuda.is_available():
+        print('Using CUDA')
+        model.to(torch.device("cuda"))
 
     # load checkpoint path
     if CHECKPOINT_PATH != None:

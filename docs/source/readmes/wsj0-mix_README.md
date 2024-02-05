@@ -1,1 +1,0 @@
-../../../egs/wsj0-mix/README.md
