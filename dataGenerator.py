@@ -48,6 +48,8 @@ def loadAllAudio():
                     continue
                 audio[join(root, file)] = y
                 i += 1
+    if len(audio) == 0:
+        raise Exception('No audio files found')
     print('\nfinished loading audio into memory\n')
     return audio
 
@@ -193,10 +195,7 @@ def generateExample(length=60 * SR, songPath=None, numPositiveFiles=None, IBR=No
         pFiles = newPFiles
         pProbs = newPProbs / np.sum(newPProbs)
     if len(pFiles) == 0:
-        for i in range(5):
-            print(pFiles[i])
         print(songPath)
-        print()
         raise Exception('All positive files filtered out')
         
     # randomly select number of positive files
@@ -259,6 +258,7 @@ def generateExample(length=60 * SR, songPath=None, numPositiveFiles=None, IBR=No
 # Should recursively go through all subdirectories
 # returns a list of sorted filepaths
 def loadToList(list, probs, p, dir):
+    init_len = len(list)
     for root, dirs, files in os.walk(dir):
         for file in files:
             if file.endswith('.wav'):
@@ -266,6 +266,8 @@ def loadToList(list, probs, p, dir):
     count = len(list) - len(probs)
     while len(probs) < len(list):
         probs.append(p / count)
+    if len(list) - init_len == 0:
+        raise Exception(f'No files found in {dir}')
 
 
 # takes in a list of arrays which are wav files

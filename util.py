@@ -75,7 +75,7 @@ class Classifier:
         )
         recording.analyze()
         df = pd.DataFrame(recording.detections)  # convert to pandas dataframe and compress
-        df = df.apply(pd.to_numeric, errors='ignore')
+        df = df.apply(pd.to_numeric, errors='coerce')
         birdnetDf = df.pivot_table('confidence', index='start_time', columns='common_name',
                                    aggfunc='mean')  # pivot by common name
         birdnetDf = birdnetDf.fillna(0)

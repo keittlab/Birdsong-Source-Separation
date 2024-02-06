@@ -215,6 +215,7 @@ def runControl(n):
         i += 1
         csv = open(CSVPATH, 'a')  # open csv in append mode
     else:
+        os.makedirs(os.path.dirname(CSVPATH), exist_ok=True)
         csv = open(CSVPATH, 'w')
         csv.write('Index, Test, Song Path, numPositiveFiles For 60 sec, IBR(Isolated Background Ratio), Double Background?, Forest (In thousands of trees), Iso SDR, Iso SIR, Iso SAR, Back SDR, Back SIR, Back SAR, Time Lag\n')
         csv.flush()
@@ -334,13 +335,17 @@ def runTrilaterate(n):
 
 # Runs BirdNet
 def classify(x, classifier):
-    sf.write('temp.wav', x, SR)
-    df = classifier.classify('temp.wav')
-    if BIRD_OF_INTEREST not in df.columns:
-        results = np.zeros(len(df))
-    else:
-        results = df[BIRD_OF_INTEREST].values # index 0: probability of bird from 0 to 3 seconds
-    os.remove('temp.wav')
+    try:
+        sf.write('temp.wav', x, SR)
+        df = classifier.classify('temp.wav')
+        if BIRD_OF_INTEREST not in df.columns:
+            results = np.zeros(len(df))
+        else:
+            results = df[BIRD_OF_INTEREST].values # index 0: probability of bird from 0 to 3 seconds
+    except KeyboardInterrupt:
+        pass
+    finally:
+        os.remove('temp.wav')
     return results
 
 

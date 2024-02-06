@@ -9,6 +9,7 @@ tensorflow
 birdnetlib
 scipy
 opencv-python
+resampy
 
 # Install
 PyYAML>=5.0
